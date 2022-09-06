@@ -14,7 +14,8 @@ class ToDoController extends Controller
      */
     public function index()
     {
-        return view('table');
+        $todos = Todo::all();
+        return view('table', \compact('todos'));
     }
 
     /**
@@ -35,7 +36,12 @@ class ToDoController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'title' => 'required'
+        ]);
+
+        Todo::create($request->all());
+        return redirect()->route('todos.index')->with('success', 'Todo created successfully.');
     }
 
     /**
@@ -57,7 +63,7 @@ class ToDoController extends Controller
      */
     public function edit(Todo $todo)
     {
-        return view('edit');
+        return view('edit', \compact('todo'));
     }
 
     /**
@@ -69,7 +75,26 @@ class ToDoController extends Controller
      */
     public function update(Request $request, Todo $todo)
     {
-        //
+        $request->validate([
+            'title' => 'required'
+        ]);
+
+        $todo->update($request->all());
+        return redirect()->route('todos.index')->with('success', 'Todo updated successfully.');
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \App\Models\Todo  $todo
+     * @return \Illuminate\Http\Response
+     */
+    public function status(Todo $todo)
+    {
+        $todo->is_completed = !$todo->is_completed;
+        $todo->save();
+
+        return redirect()->route('todos.index')->with('success', 'Todo status updated successfully.');
     }
 
     /**
@@ -80,6 +105,7 @@ class ToDoController extends Controller
      */
     public function destroy(Todo $todo)
     {
-        //
+        $todo->delete();
+        return redirect()->route('todos.index')->with('success', 'Todo deleted successfully');
     }
 }

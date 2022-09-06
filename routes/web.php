@@ -15,7 +15,17 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', [ToDoController::class, 'index']);
-Route::get('/add', [ToDoController::class, 'create']);
-Route::get('/edit', [ToDoController::class, 'edit']);
+// Route::get('/', [ToDoController::class, 'index']);
+// Route::get('/add', [ToDoController::class, 'create']);
+// Route::get('/edit', [ToDoController::class, 'edit']);
 
+Route::resource('todos', ToDoController::class)->only([
+    'index',
+    'create',
+    'store',
+    'edit',
+    'update',
+    'destroy',
+]);
+Route::put('/todos/{todo}/status', [ToDoController::class, 'status'])
+->name('todos.status');
